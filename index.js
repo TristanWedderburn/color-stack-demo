@@ -1,48 +1,28 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const router = express.Router();
-const Author = require('./models/author')
+const author = require('./routers/author')
+const book = require('./routers/book')
 
 const app = express();
+app.use(express.json());
 
 const mongoDB = '';
 const port = 8080;
 
-async (() => {
-
-})
-try {
-    await mongoose.connect(mongoDB);
-} catch (err) {
-    console.log(err)
-}
-
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+(async () => {
+    try {
+        await mongoose.connect(mongoDB,{
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+    } catch (err) {
+        console.log(err)
+    }
+})()
 
 app.listen(port, function() {
     console.log(`listening on ${port}`)
 })
 
-router.get('/test', (req, res) => {
-    res.send("hi")
-})
-
-router.get('/books/:author/books/:title', (req, res) => {
-    res.send("hi")
-})
-
-router.post('/author/:firstName/:lastName', async (req, res) => {
-    const newAuthor = new Author({firstName: req.params.firstName, lastName: req.params.lastName})
-    try {
-        await newAuthor.save()
-    } catch (err) {
-        console.log(err)
-    }
-    //
-    // try {
-    //     await Author.create({firstName: "Bob", lastName: "Jones"})
-    // } catch (err) {
-    //     console.log(err)
-    // }
-})
+app.use('/author', author)
+app.use('/book', book)
