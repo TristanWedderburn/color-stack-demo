@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Author = require('./author')
 
 const Schema = mongoose.Schema;
 
@@ -11,12 +12,13 @@ const BookSchema = new Schema(
     }
 );
 
-// Virtual for book's URL
-// BookSchema
-//     .virtual('url')
-//     .get(function () {
-//         return '/catalog/book/' + this._id;
-//     });
+BookSchema.post('findOneAndDelete', async function (doc) {
+    console.log(doc)
+    await Author.updateOne(
+        {_id: doc.author},
+        {$pull: {books: doc._id}},
+    )
+})
 
 //Export model
 module.exports = mongoose.model('Book', BookSchema);

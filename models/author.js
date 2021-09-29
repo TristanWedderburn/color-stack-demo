@@ -22,7 +22,7 @@ const AuthorSchema = new Schema(
 AuthorSchema
     .virtual('name')
     .get(function () {
-        return this.lastName + ', ' + this.firstName;
+        return `${this.lastName}, ${this.firstName}`;
     });
 
 // Parent referncing, reverse populate the parent documents using virtual

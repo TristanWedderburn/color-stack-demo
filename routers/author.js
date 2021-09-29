@@ -1,5 +1,5 @@
 const express = require('express')
-const Author = require("../controllers/author");
+const Author = require("../models/author");
 const router = express.Router()
 
 // Example of middleware
@@ -44,8 +44,8 @@ router.get('/', async(req, res) => {
 
         // Example using parent referencing
         // let author = await Author.find({firstName, lastName}).populate({path: 'books', select: 'title'})
-        // author.name()
 
+        console.log(author.name)
         res.status(200).json(author)
     } catch (err) {
         res.status(400).json({error: err})
@@ -55,29 +55,28 @@ router.get('/', async(req, res) => {
 router.delete('/', async(req, res) => {
     try {
         // Example query for author with firstName = tristan & lastName=wedderburn:
-        // http://localhost:4200/author?firstName=tristan&lastName=wedderburn
+        // http://localhost:4200/author?id=123
 
-        const {firstName, lastName} = req.query
+        const { id } = req.query
 
-        // Example using child referencing
-        const author = await Author.deleteOne({firstName, lastName});
+        await Author.deleteOne({id});
 
-        res.status(200).json(author)
+        res.status(200)
     } catch (err) {
         res.status(400).json({error: err})
     }
 })
 
 router.put('/', async(req, res) => {
-    // Example POST request using cURL:
-    // curl -X POST -H "Content-Type: application/json" -d '{"firstName": "tristan", "lastName": "wedderburn"}' http://localhost:4200/author/
+    // Example PUT request using cURL:
+    // curl -X PUT -H "Content-Type: application/json" -d '{"id": "1234", "birthday": "1/1/2020"}' http://localhost:4200/author/
 
     try {
         // validate req.body
-        const filter = { firstName: req.body.firstName, lastName: req.body.lastName };
-        const update = req.body.updatedFields;
+        const {id, ...body} = req.body
+        const filter = { _id: id };
 
-        const updatedAuthor = await Author.findOneAndUpdate(filter, update, {new: true} ) // new: true returns the updated doc
+        const updatedAuthor = await Author.findOneAndUpdate(filter, body, {new: true} ) // new: true returns the updated doc
         res.status(200).json(updatedAuthor)
     } catch (err) {
         res.status(400).json({error: err})
