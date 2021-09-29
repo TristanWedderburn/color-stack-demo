@@ -3,6 +3,9 @@ const Book = require('../models/book')
 
 module.exports = {
     create: async(req, res) => {
+        // Example post request to create a book for an author:
+        // curl -X POST -H "Content-Type: application/json" -d '{"author": "6153d82453d20de21c62bb68", "title": "ColorStack Dictionary", "summary": "This is our books summary", "isbn": "978-3-16-148410-0" }' http://localhost:4200/book/
+
         try {
             // validate req.body
             const newBook = new Book(req.body)
@@ -16,12 +19,6 @@ module.exports = {
         } catch (err) {
             res.status(400).json({error: err})
         }
-
-        // try {
-        //     await Author.create({firstName: "Bob", lastName: "Jones"})
-        // } catch (err) {
-        //     console.log(err)
-        // }
     },
     find: async(req, res) => {
         try {
