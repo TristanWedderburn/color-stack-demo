@@ -11,16 +11,7 @@ dotenv.config()
 const mongoDB = process.env.MONGODB_URI;
 const port = process.env.PORT;
 
-(async () => {
-    try {
-        await mongoose.connect(mongoDB,{
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-    } catch (err) {
-        console.log(err)
-    }
-})()
+mongoose.connect(mongoDB).catch(err => console.log(err))
 
 app.listen(port, function() {
     console.log(`listening on ${port}`)

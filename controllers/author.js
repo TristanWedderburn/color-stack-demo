@@ -27,7 +27,13 @@ module.exports = {
     find: async(req, res) => {
         try {
             const {firstName, lastName} = req.query
-            let author = await Author.find({firstName, lastName}).populate('books')
+
+            // Example using child referencing
+            // let author = await Author.find({firstName, lastName}).populate('books')
+
+            // Example using parent referencing
+            let author = await Author.find({firstName, lastName}).populate({path: 'books', select: 'title'})
+
             res.status(200).json(author)
         } catch (err) {
             res.status(400).json({error: err})
