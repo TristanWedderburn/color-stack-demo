@@ -1,40 +1,52 @@
 const express = require('express')
-const router = express.Router()
+const router = express.Router() //Express Router is also considered a middleware, just built into Express
+
+// Import the models we need
 const Book = require('../models/book')
 const Author = require('../models/author')
 
 // Example of middleware
+// Other examples could be implementing Authentication and checking if the cookies in our request are valid on the server. We can use third-party libraries to accomplish this!
+
 router.use((req, res, next) => {
     // This method essentially intercepts the request to allow for pre-processing of the request body before passing it to the specified route
     
-    // For example, we can intercept and log the request if we want to view all the traffic to our application
+    // For example, we can intercept and validate the content-type of the request being made for requests to create or update books
     console.log("In the book route")
     console.log(`request type of ${req.method}`)
 
-    // if a certain req method,
-    //     if (req.headers['content-type'] !== 'application/json') {
-    //         res.status(400).send('Server requires application/json')
-    //     } else {
-    //     next()
-    //     }
-
+    if (['POST', 'PUT'].includes(req.method)) {
+        console.log("Potentially dangerous request verb")
+        if (req.headers['content-type'] !== 'application/json') {
+            res.status(400).send('Sorry, the server requires the Content-Type to be application/json ')
+        }
+        console.log("But validation passed")
+        next()
+    } 
     next()
 })
 
 const generateIsbn = () => {
     return (req, res, next) => {
-        console.log()
+        console.log("Generating ISBN for book")
         req.isbn = "12345"
         next()
     }
 }
 
+// Let's talk about callbacks here
+// Callbacks are just names for functions in js
+// would have to use a .then and then wait for the response
+// However, some funtions aren't immediate computations or can potentially take a while to return, such as interacting with our database.
+// For this reason, we want to use the async/await feature (a new way to implement asynchronous code in js that makes the code cleaner)
+// easy error handling using a try and catch block
 router.post('/', () => generateIsbn(), async(req, res) => {
     // Example post request to create a book for an author:
-    // curl -X POST -H "Content-Type: application/json" -d '{"author": "6153d82453d20de21c62bb68", "title": "ColorStack Dictionary", "summary": "This is our books summary", "isbn": "978-3-16-148410-0" }' http://localhost:4200/book/
+    // curl -X POST -H "Content-Type: application/json" -d '{"author": "1234", "title": "ColorStack Dictionary", "summary": "This is our books summary", "isbn": "978-3-16-148410-0" }' http://localhost:4200/book/
 
     try {
-        // validate req.body
+        // validate req.body using the model
+        // This will throw errors if a required field is not included
         const newBook = new Book(req.body)
         await newBook.save()
 
@@ -50,7 +62,7 @@ router.post('/', () => generateIsbn(), async(req, res) => {
 })
 
 router.get('/', async(req, res) => {
-    // request to localhost:4200/book?title=your_title
+    // request to localhost:4200/book?title=ColorStack+Dictionary
 
     try {
         const {title} = req.query
@@ -61,34 +73,35 @@ router.get('/', async(req, res) => {
     }
 })
 
-router.delete('/', async(req, res) => {
-    try {
-        // http://localhost:4200/book?id=1234
 
-        const { id } = req.query
+// router.delete('/', async(req, res) => {
+//     try {
+//         // http://localhost:4200/book?id=1234
 
-        const book = await Book.findOneAndDelete({_id: id});
+//         const { id } = req.query
 
-        res.status(200).json(book)
-    } catch (err) {
-        res.status(400).json({error: err})
-    }
-})
+//         const book = await Book.findOneAndDelete({_id: id});
 
-router.put('/', async(req, res) => {
-    // Example PUT request using cURL:
-    // curl -X PUT -H "Content-Type: application/json" -d '{"id": "1234", "birthday": "1/1/2020"}' http://localhost:4200/book/
+//         res.status(200).json(book)
+//     } catch (err) {
+//         res.status(400).json({error: err})
+//     }
+// })
 
-    try {
-        // validate req.body
-        const {id, ...body} = req.body
-        const filter = { _id: id };
+// router.put('/', async(req, res) => {
+//     // Example PUT request using cURL:
+//     // curl -X PUT -H "Content-Type: application/json" -d '{"id": "1234", "title": "Tristans 2nd book title"}' http://localhost:4200/book/
 
-        const updatedBook = await Book.findOneAndUpdate(filter, body, {new: true} ) // new: true returns the updated doc
-        res.status(200).json(updatedBook)
-    } catch (err) {
-        res.status(400).json({error: err})
-    }
-})
+//     try {
+//         // validate req.body
+//         const {id, ...body} = req.body
+//         const filter = { _id: id };
+
+//         const updatedBook = await Book.findOneAndUpdate(filter, body, {new: true} ) // new: true returns the updated doc
+//         res.status(200).json(updatedBook)
+//     } catch (err) {
+//         res.status(400).json({error: err})
+//     }
+// })
 
 module.exports = router

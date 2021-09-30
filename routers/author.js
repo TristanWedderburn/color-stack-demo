@@ -42,35 +42,36 @@ router.get('/', async(req, res) => {
     }
 })
 
-router.delete('/', async(req, res) => {
-    try {
-        // Example query for author with firstName = tristan & lastName=wedderburn:
-        // http://localhost:4200/author?id=123
+// Note: Will cover if I have time
+// router.delete('/', async(req, res) => {
+//     try {
+//         // Example query for author with firstName = tristan & lastName=wedderburn:
+//         // http://localhost:4200/author?id=123
 
-        const { id } = req.query
+//         const { id } = req.query
 
-        await Author.deleteOne({id});
+//         await Author.deleteOne({id});
 
-        res.status(200)
-    } catch (err) {
-        res.status(400).json({error: err})
-    }
-})
+//         res.status(200)
+//     } catch (err) {
+//         res.status(400).json({error: err})
+//     }
+// })
 
-router.put('/', async(req, res) => {
-    // Example PUT request using cURL:
-    // curl -X PUT -H "Content-Type: application/json" -d '{"id": "1234", "birthday": "1/1/2020"}' http://localhost:4200/author/
+// router.put('/', async(req, res) => {
+//     // Example PUT request using cURL:
+//     // curl -X PUT -H "Content-Type: application/json" -d '{"id": "1234", "birthday": "1/1/2020"}' http://localhost:4200/author/
 
-    try {
-        // validate req.body
-        const {id, ...body} = req.body
-        const filter = { _id: id };
+//     try {
+//         // validate req.body
+//         const {id, ...body} = req.body
+//         const filter = { _id: id };
 
-        const updatedAuthor = await Author.findOneAndUpdate(filter, body, {new: true} ) // new: true returns the updated doc
-        res.status(200).json(updatedAuthor)
-    } catch (err) {
-        res.status(400).json({error: err})
-    }
-})
+//         const updatedAuthor = await Author.findOneAndUpdate(filter, body, {new: true} ) // new: true returns the updated doc
+//         res.status(200).json(updatedAuthor)
+//     } catch (err) {
+//         res.status(400).json({error: err})
+//     }
+// })
 
 module.exports = router
