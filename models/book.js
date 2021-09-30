@@ -12,6 +12,15 @@ const BookSchema = new Schema(
     }
 );
 
+BookSchema.pre('save', function (next) {
+    console.log(this)
+    // Don't allow harry potter
+    if (this.title === "Harry Potter") {
+        throw new Error("Harry Potter is trademarked :(")
+    }
+    next()
+})
+
 BookSchema.post('findOneAndDelete', async function (doc) {
     console.log(doc)
     await Author.updateOne(
