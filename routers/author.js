@@ -2,16 +2,6 @@ const express = require('express')
 const Author = require("../models/author");
 const router = express.Router()
 
-// Example of middleware
-router.use((req, res, next) => {
-    // This method essentially intercepts the request to allow for pre-processing of the request body before passing it to the specified route
-    console.log("In the author route")
-    console.log(`request type of ${req.method}`)
-
-    // TODO: add something to the response before passing it into the create method
-    next()
-})
-
 router.post('/', async(req, res) => {
     // Example POST request using cURL:
     // curl -X POST -H "Content-Type: application/json" -d '{"firstName": "tristan", "lastName": "wedderburn"}' http://localhost:4200/author/
