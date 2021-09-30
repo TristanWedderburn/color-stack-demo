@@ -38,7 +38,7 @@ router.use((req, res, next) => {
 
 const generateIsbn = (req, res, next) => {
     console.log("Generating ISBN for book")
-    req.isbn = "12345"
+    req.body.isbn = "12345"
     next()
 }
 
