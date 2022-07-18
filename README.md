@@ -1,8 +1,7 @@
-# color-stack-demo
-Demo code for Color Stack technical workshop
+Example code for an Express.js API connected to a MongoDB database
 
-Create a .env file with 
+##### Setting up your Database credentials
 
-PORT=(your port)
+Create a .env file containing the following content:
 
-MONGODB_URI=(your atlas connection)
+MONGODB_URI=(i.e. your MongoDB Atlas connection string)
